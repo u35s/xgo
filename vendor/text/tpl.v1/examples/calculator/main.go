@@ -1,30 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
-	"github.com/u35s/xgo"
-
-	"text/tpl.v1/interpreter"
+	"qiniupkg.com/text/tpl.v1/interpreter"
+	"qiniupkg.com/text/tpl.v1/number"
 )
 
-type X struct {
-	x1 struct {
-		ra float64
-		rb []int64
-	}
-	x2 float64
-}
-
-var x X = X{}
-
-/////////////////////////
-
 var (
-	ipt    = xgo.New()
+	calc   = number.New()
 	engine *interpreter.Engine
 )
 
@@ -46,21 +33,20 @@ func eval(line string) {
 		return
 	}
 
-	v, _ := ipt.Ret()
+	v, _ := calc.Ret()
 	fmt.Printf("> %v\n\n", v)
 }
 
 func main() {
-	x.x1.ra = 6
-	x.x1.rb = []int64{1}
-	ipt.AddVar("x", x)
+
 	var err error
-	if engine, err = interpreter.New(ipt, nil); err != nil {
-		log.Printf("%v\n", err)
+	if engine, err = interpreter.New(calc, nil); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	code := `
-1 + 3 * 5 + x.x1.rb[0]
-	`
-	eval(code)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		eval(scanner.Text())
+	}
 }

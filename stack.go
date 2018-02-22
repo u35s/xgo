@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strings"
 
-	tpl "qiniupkg.com/text/tpl.v1"
+	tpl "text/tpl.v1"
 )
 
 func printStack(all bool) {

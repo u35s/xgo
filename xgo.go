@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	interpreter "qiniupkg.com/text/tpl.v1/interpreter.util"
+	interpreter "text/tpl.v1/interpreter.util"
 )
 
 var (
