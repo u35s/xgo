@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	tpl "text/tpl.v1"
+	"text/tpl.v1/interpreter"
 )
 
 func printStack(all bool) {
@@ -22,8 +23,35 @@ type Stack struct {
 
 func NewStack() *Stack    { return &Stack{vartable: make(map[string]interface{})} }
 func (stk *Stack) Clear() { stk.stk = (stk.stk)[:0] }
-func (stk *Stack) Push(v float64) {
-	stk.stk = append(stk.stk, v)
+func (stk *Stack) Push(v interface{}) {
+	tp := reflect.TypeOf(v)
+	switch tp.Kind() {
+	case reflect.Slice:
+		itfc, ok := v.([]tpl.Token)
+		if !ok {
+			panic("unknow slice type")
+		}
+		switch itfc[0].Kind {
+		case tpl.FLOAT:
+			v1, _ := interpreter.ParseFloat(itfc[0].Literal)
+			stk.stk = append(stk.stk, v1)
+		case tpl.INT:
+			v1, _ := interpreter.ParseInt(itfc[0].Literal)
+			stk.stk = append(stk.stk, v1)
+		}
+	case reflect.Float32:
+		stk.stk = append(stk.stk, v)
+	case reflect.Float64:
+		stk.stk = append(stk.stk, v)
+	case reflect.Int:
+		stk.stk = append(stk.stk, v)
+	case reflect.Int32:
+		stk.stk = append(stk.stk, v)
+	case reflect.Int64:
+		stk.stk = append(stk.stk, v)
+	default:
+		panic("unknow push type : " + tp.String())
+	}
 }
 
 func (stk *Stack) PushArrayOrSlice(v interface{}) {
@@ -105,5 +133,5 @@ func (stk *Stack) PopArgs(arity int) (args []reflect.Value, ok bool) {
 }
 
 func Arity(stk *Stack, arity int) {
-	stk.Push(float64(arity))
+	stk.Push(arity)
 }

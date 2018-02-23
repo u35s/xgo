@@ -3,6 +3,7 @@ package xgo
 import (
 	"errors"
 	"fmt"
+	"reflect"
 
 	interpreter "text/tpl.v1/interpreter.util"
 )
@@ -55,15 +56,35 @@ func (x *XGo) Ret() (v interface{}, ok bool) {
 }
 
 func (x *XGo) Call(name string) error {
-	if fn, ok := x.fntable[name]; ok {
-		if arity, ok := x.stack.Pop(); ok {
-			err := interpreter.Call(x.stack, fn, arity.(int))
-			if err != nil {
-				return fmt.Errorf("call function `%s` failed: %v", name, err)
-			}
-			return nil
+	var n int
+	if arity, ok := x.stack.Pop(); ok {
+		atp := reflect.TypeOf(arity)
+		switch atp.Kind() {
+		case reflect.Int:
+			n = arity.(int)
+		case reflect.Int64:
+			n = int(arity.(int64))
+		case reflect.Float64:
+			n = int(arity.(float64))
+		default:
+			panic("unknow arity type " + atp.String())
 		}
+	} else {
 		return ErrFncallWithoutArity
+	}
+	if fn, ok := x.fntable["$"+name]; ok {
+		err := interpreter.Call(x.stack, fn, n)
+		if err != nil {
+			return fmt.Errorf("call function `%s` failed: %v", name, err)
+		}
+		return nil
+	} else {
+		val := x.stack.getVal(name)
+		err := interpreter.Call(x.stack, val.Interface(), n)
+		if err != nil {
+			return fmt.Errorf("call function `%s` failed: %v", name, err)
+		}
+		return nil
 	}
 	return fmt.Errorf("function `%s` not found", name)
 }

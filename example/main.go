@@ -17,6 +17,8 @@ type X struct {
 		rb []int64
 	}
 	x2 float64
+	X3 func() int64
+	x4 func() int64
 }
 
 var x X = X{}
@@ -53,6 +55,8 @@ func eval(line string) {
 func main() {
 	x.x1.ra = 6
 	x.x1.rb = []int64{1}
+	x.X3 = func() int64 { return 5 }
+	x.x4 = func() int64 { return 5 }
 	ipt.AddVar("x", x)
 	var err error
 	if engine, err = interpreter.New(ipt, nil); err != nil {
@@ -60,7 +64,7 @@ func main() {
 		os.Exit(1)
 	}
 	code := `
-1 + 3 * 5 + x.x1.rb[0]
+1 + 3 * 5 + x.x1.rb[0] + add(1,7) + x.X3()
 	`
 	eval(code)
 }

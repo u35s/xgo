@@ -1,7 +1,6 @@
 package xgo
 
 import (
-	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -16,7 +15,6 @@ func getReflectValue(val reflect.Value, name string) (int, reflect.Value, bool) 
 }
 
 func recursiveGetReflectValue(itfc interface{}, nameSlc []string) (index int, val reflect.Value, ok bool) {
-	fmt.Printf("%+v,%+v\n", itfc, nameSlc)
 	for j := 0; j < len(nameSlc); j++ {
 		if j == 0 {
 			val = reflect.ValueOf(itfc)
