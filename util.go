@@ -33,3 +33,10 @@ func Atoi(s string) int {
 	}
 	return 0
 }
+
+func Atof(s string) float64 {
+	if i, err := strconv.ParseFloat(s, 10); err == nil {
+		return float64(i)
+	}
+	return 0
+}

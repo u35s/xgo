@@ -24,13 +24,7 @@ type Stack struct {
 func NewStack() *Stack    { return &Stack{vartable: make(map[string]interface{})} }
 func (stk *Stack) Clear() { stk.stk = (stk.stk)[:0] }
 func (stk *Stack) Push(v interface{}) {
-	tp := reflect.TypeOf(v)
-	switch tp.Kind() {
-	case reflect.Slice:
-		itfc, ok := v.([]tpl.Token)
-		if !ok {
-			panic("unknow slice type")
-		}
+	if itfc, ok := v.([]tpl.Token); ok {
 		switch itfc[0].Kind {
 		case tpl.FLOAT:
 			v1, _ := interpreter.ParseFloat(itfc[0].Literal)
@@ -39,18 +33,8 @@ func (stk *Stack) Push(v interface{}) {
 			v1, _ := interpreter.ParseInt(itfc[0].Literal)
 			stk.stk = append(stk.stk, v1)
 		}
-	case reflect.Float32:
+	} else {
 		stk.stk = append(stk.stk, v)
-	case reflect.Float64:
-		stk.stk = append(stk.stk, v)
-	case reflect.Int:
-		stk.stk = append(stk.stk, v)
-	case reflect.Int32:
-		stk.stk = append(stk.stk, v)
-	case reflect.Int64:
-		stk.stk = append(stk.stk, v)
-	default:
-		panic("unknow push type : " + tp.String())
 	}
 }
 
@@ -59,8 +43,8 @@ func (stk *Stack) PushArrayOrSlice(v interface{}) {
 	v1 := stk.getVal(slc[0].Literal)
 	v2 := v1.Index(Atoi(slc[2].Literal))
 	switch v2.Kind() {
-	case reflect.Int64:
-		stk.stk = append(stk.stk, int(v2.Int()))
+	case reflect.Float64:
+		stk.stk = append(stk.stk, v2.Float())
 	}
 }
 
@@ -80,12 +64,8 @@ func (stk *Stack) getVal(n string) reflect.Value {
 func (stk *Stack) PushIdent(n string) {
 	val := stk.getVal(n)
 	switch val.Kind() {
-	case reflect.Float32:
-		stk.stk = append(stk.stk, val.Float())
 	case reflect.Float64:
 		stk.stk = append(stk.stk, val.Float())
-	case reflect.Interface:
-		stk.stk = append(stk.stk, val.Interface())
 	default:
 		panic("error value:" + n)
 	}

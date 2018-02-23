@@ -14,11 +14,11 @@ import (
 type X struct {
 	x1 struct {
 		ra float64
-		rb []int64
+		rb []float64
 	}
 	x2 float64
-	X3 func() int64
-	x4 func() int64
+	X3 func() float64
+	x4 func() float64
 }
 
 var x X = X{}
@@ -54,9 +54,9 @@ func eval(line string) {
 
 func main() {
 	x.x1.ra = 6
-	x.x1.rb = []int64{1}
-	x.X3 = func() int64 { return 5 }
-	x.x4 = func() int64 { return 5 }
+	x.x1.rb = []float64{1}
+	x.X3 = func() float64 { return 5 }
+	x.x4 = func() float64 { return 5 }
 	ipt.AddVar("x", x)
 	var err error
 	if engine, err = interpreter.New(ipt, nil); err != nil {

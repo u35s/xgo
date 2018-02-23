@@ -62,10 +62,6 @@ func (x *XGo) Call(name string) error {
 		switch atp.Kind() {
 		case reflect.Int:
 			n = arity.(int)
-		case reflect.Int64:
-			n = int(arity.(int64))
-		case reflect.Float64:
-			n = int(arity.(float64))
 		default:
 			panic("unknow arity type " + atp.String())
 		}
