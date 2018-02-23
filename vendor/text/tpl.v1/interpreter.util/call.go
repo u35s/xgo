@@ -13,6 +13,7 @@ var (
 
 var (
 	typeFloat64 = reflect.TypeOf(float64(0))
+	typeUint    = reflect.TypeOf(uint(0))
 )
 
 // -----------------------------------------------------------------------------
@@ -144,7 +145,8 @@ func validateType(in *reflect.Value, t reflect.Type) error {
 		return nil
 	}
 
-	if t == typeFloat64 {
+	switch t {
+	case typeFloat64:
 		var val float64
 		switch kind := tin.Kind(); {
 		case kind >= reflect.Int && kind <= reflect.Int64:
@@ -153,6 +155,18 @@ func validateType(in *reflect.Value, t reflect.Type) error {
 			val = float64(in.Uint())
 		case kind == reflect.Float32:
 			val = in.Float()
+		default:
+			goto lzErr
+		}
+		*in = reflect.ValueOf(val)
+		return nil
+	case typeUint:
+		var val uint
+		switch kind := tin.Kind(); {
+		case kind >= reflect.Int && kind <= reflect.Int64:
+			val = uint(in.Int())
+		case kind >= reflect.Uint && kind <= reflect.Uint64:
+			val = uint(in.Uint())
 		default:
 			goto lzErr
 		}

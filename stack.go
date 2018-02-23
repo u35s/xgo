@@ -63,11 +63,15 @@ func (stk *Stack) getVal(n string) reflect.Value {
 
 func (stk *Stack) PushIdent(n string) {
 	val := stk.getVal(n)
-	switch val.Kind() {
-	case reflect.Float64:
+	switch kind := val.Kind(); {
+	case kind >= reflect.Float32 && kind <= reflect.Float64:
 		stk.stk = append(stk.stk, val.Float())
+	case kind >= reflect.Int && kind <= reflect.Int64:
+		stk.stk = append(stk.stk, val.Int())
+	case kind >= reflect.Uint && kind <= reflect.Uintptr:
+		stk.stk = append(stk.stk, val.Uint())
 	default:
-		panic("error value:" + n)
+		panic("error value:" + n + ":" + val.Kind().String())
 	}
 }
 
