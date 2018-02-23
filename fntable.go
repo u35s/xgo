@@ -107,5 +107,6 @@ var fntable = map[string]interface{}{
 	"$push":       (*Stack).Push,
 	"$ident":      (*Stack).PushIdent,
 	"$arrayslice": (*Stack).PushArrayOrSlice,
+	"$assign":     (*Stack).Assign,
 	"$call":       (*XGo).Call,
 }

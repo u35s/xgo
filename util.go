@@ -11,6 +11,11 @@ func getReflectValue(val reflect.Value, name string) (int, reflect.Value, bool) 
 			return i, val.Field(i), true
 		}
 	}
+	for i := 0; i < val.NumMethod(); i++ {
+		if val.Type().Method(i).Name == name {
+			return i, val.Method(i), true
+		}
+	}
 	return 0, val, false
 }
 
@@ -18,6 +23,15 @@ func recursiveGetReflectValue(itfc interface{}, nameSlc []string) (index int, va
 	for j := 0; j < len(nameSlc); j++ {
 		if j == 0 {
 			val = reflect.ValueOf(itfc)
+			if val.Kind() == reflect.Interface || val.Kind() == reflect.Ptr {
+				for i := 0; i < val.NumMethod(); i++ {
+					if val.Type().Method(i).Name == nameSlc[j] {
+						index, val, ok = i, val.Method(i), true
+						return
+					}
+				}
+				val = val.Elem()
+			}
 		}
 		index, val, ok = getReflectValue(val, nameSlc[j])
 		if !ok {

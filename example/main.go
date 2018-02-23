@@ -19,10 +19,18 @@ type X struct {
 	x2 float64
 	X3 func(uint) float64
 	x4 func() float64
-	x5 uint
+	X5 uint
 }
 
+type Y struct {
+	Y1 uint
+}
+
+func (this *X) Get() *Y { return &y }
+
 var x X = X{}
+
+var y Y = Y{}
 
 /////////////////////////
 
@@ -48,9 +56,6 @@ func eval(line string) {
 		fmt.Fprintln(os.Stderr, err)
 		return
 	}
-
-	v, _ := ipt.Ret()
-	fmt.Printf("> %v\n\n", v)
 }
 
 func main() {
@@ -58,15 +63,22 @@ func main() {
 	x.x1.rb = []float64{1}
 	x.X3 = func(d uint) float64 { return 5 * float64(d) }
 	x.x4 = func() float64 { return 5 }
-	x.x5 = 3
-	ipt.AddVar("x", x)
+	x.X5 = 3
+	ipt.AddVar("x", &x)
 	var err error
 	if engine, err = interpreter.New(ipt, nil); err != nil {
 		log.Printf("%v\n", err)
 		os.Exit(1)
 	}
 	code := `
-1 + 3 * 5 + x.x1.rb[0] + add(1,7) + x.X3(x.x5)
-	`
-	eval(code)
+temp = 1 + 3 * 5 + x.x1.rb[0] + add(1,7) + x.X3(x.X5)
+temp = temp + 100
+x.X5 = temp + 60
+y1 = x.Get()
+y1.Y1 = x.X5
+`
+	for _, v := range strings.Split(code, "\n") {
+		eval(v)
+	}
+	fmt.Printf("%+v,%+v,%+v\n", x.X5, y, y.Y1)
 }

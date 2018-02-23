@@ -2,6 +2,7 @@ package xgo
 
 import (
 	"fmt"
+	"log"
 	"reflect"
 	"runtime"
 	"strings"
@@ -54,11 +55,49 @@ func (stk *Stack) getVal(n string) reflect.Value {
 	if !ok {
 		panic("undefined var: " + slc[0])
 	}
+	if len(slc) == 1 {
+		if val := reflect.ValueOf(v); val.Kind() == reflect.Interface || val.Kind() == reflect.Ptr {
+			return val.Elem()
+		} else {
+			return val
+		}
+	}
 	_, val, ok := recursiveGetReflectValue(v, slc[1:])
 	if !ok {
 		panic("undefined var: " + n)
 	}
 	return val
+}
+
+func (stk *Stack) Assign(v interface{}) {
+	asignv, ok := stk.Pop()
+	if !ok {
+		panic("assign with stack empty")
+	}
+	slc := v.([]tpl.Token)
+	v1 := slc[0].Literal
+	if strings.Contains(v1, ".") {
+		val := stk.getVal(v1)
+		log.Printf("%+v,%+v,%+v,%+v,%v\n", v1, val, reflect.TypeOf(asignv).Kind(), val.Kind(), val.CanSet())
+		switch kind := val.Kind(); {
+		case kind == reflect.Bool:
+			val.SetBool(asignv.(bool))
+		case kind >= reflect.Int && kind <= reflect.Int64:
+			val.SetInt(asignv.(int64))
+		case kind >= reflect.Float32 && kind <= reflect.Float64:
+			val.SetFloat(asignv.(float64))
+		case kind >= reflect.Uint && kind <= reflect.Uintptr:
+			if tp := reflect.TypeOf(asignv); tp.Kind() >= reflect.Float32 && tp.Kind() <= reflect.Float64 {
+				val.SetUint(uint64(asignv.(float64)))
+			} else if tp := reflect.TypeOf(asignv); tp.Kind() >= reflect.Uint && tp.Kind() <= reflect.Uint64 {
+				val.SetUint(asignv.(uint64))
+			}
+		default:
+			panic("unkonw assign type")
+		}
+	} else {
+		stk.vartable[v1] = asignv
+	}
 }
 
 func (stk *Stack) PushIdent(n string) {
@@ -94,7 +133,11 @@ func (stk *Stack) PushRet(ret []reflect.Value) error {
 			val = float64(v.Int())
 		case kind >= reflect.Uint && kind <= reflect.Uintptr:
 			val = float64(v.Uint())
+		case kind == reflect.Ptr:
+			stk.Push(v.Interface())
+			continue
 		default:
+			log.Println(v.Kind())
 			return ErrUnsupportedRetType
 		}
 		stk.Push(val)

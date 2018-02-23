@@ -25,6 +25,7 @@ factor =
 	'(' doc ')' |
 	(IDENT '(' doc %= ','/ARITY ')')/call |
 	(IDENT '[' INT ']')/arrayslice |
+	(IDENT '=' doc)/assign |
 	IDENT/ident |
 	'+' factor
 `
