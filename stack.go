@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	tpl "text/tpl.v1"
-	"text/tpl.v1/interpreter"
 )
 
 func printStack(all bool) {
@@ -28,11 +27,9 @@ func (stk *Stack) Push(v interface{}) {
 	if itfc, ok := v.([]tpl.Token); ok {
 		switch itfc[0].Kind {
 		case tpl.FLOAT:
-			v1, _ := interpreter.ParseFloat(itfc[0].Literal)
-			stk.stk = append(stk.stk, v1)
+			stk.stk = append(stk.stk, Atof(itfc[0].Literal))
 		case tpl.INT:
-			v1, _ := interpreter.ParseInt(itfc[0].Literal)
-			stk.stk = append(stk.stk, v1)
+			stk.stk = append(stk.stk, Atoi(itfc[0].Literal))
 		case tpl.STRING:
 			stk.stk = append(stk.stk, itfc[0].Literal)
 		}
@@ -44,10 +41,12 @@ func (stk *Stack) Push(v interface{}) {
 func (stk *Stack) PushArrayOrSlice(v interface{}) {
 	slc := v.([]tpl.Token)
 	v1 := stk.getVal(slc[0].Literal)
-	v2 := v1.Index(Atoi(slc[2].Literal))
+	v2 := v1.Index(int(Atoi(slc[2].Literal)))
 	switch v2.Kind() {
 	case reflect.Float64:
 		stk.stk = append(stk.stk, v2.Float())
+	case reflect.Int:
+		stk.stk = append(stk.stk, int(v2.Int()))
 	}
 }
 

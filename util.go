@@ -41,9 +41,9 @@ func recursiveGetReflectValue(itfc interface{}, nameSlc []string) (index int, va
 	return
 }
 
-func Atoi(s string) int {
+func Atoi(s string) int64 {
 	if i, err := strconv.ParseInt(s, 10, 0); err == nil {
-		return int(i)
+		return int64(i)
 	}
 	return 0
 }
@@ -53,25 +53,4 @@ func Atof(s string) float64 {
 		return float64(i)
 	}
 	return 0
-}
-
-func panicUnsupportedOp1(op string, a interface{}) interface{} {
-
-	ta := typeString(a)
-	panic("unsupported operator: " + op + ta)
-}
-
-func panicUnsupportedOp2(op string, a, b interface{}) interface{} {
-
-	ta := typeString(a)
-	tb := typeString(b)
-	panic("unsupported operator: " + ta + op + tb)
-}
-
-func typeString(a interface{}) string {
-
-	if a == nil {
-		return "nil"
-	}
-	return reflect.TypeOf(a).String()
 }

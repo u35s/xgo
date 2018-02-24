@@ -16,7 +16,7 @@ var (
 const gm = `
 
 term = factor *('*' factor/mul | '/' factor/quo | '%' factor/mod |
-	"<<" factor/lshr | ">>" factor/rshr | '&' factor/bitand | "&^" factor/andnot)
+	"<<" factor/lshr | ">>" factor/rshr )
 
 doc = term *('+' term/add | '-' term/sub)
 

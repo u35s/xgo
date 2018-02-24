@@ -8,6 +8,8 @@ import (
 
 	"github.com/u35s/xgo"
 
+	_ "github.com/u35s/xgo/lib/builtin"
+
 	"text/tpl.v1/interpreter"
 )
 
@@ -76,13 +78,13 @@ temp = temp + 100
 x.X5 = temp + 60
 y1 = x.Get()
 y1.Y1 = x.X5
-logi("x:%+v,y1:%+v\n",x,y1)
+printf("x:%+v,y1:%+v\n",x,y1)
 
 a = 1<<5
-logi("a:%v",a)
+printf("a:%+v",a)
 b = 1
 a = a>>b
-logi("a:%v,b:%v",a,b)
+printf("a:%+v,b:%+v",a,b)
 `
 	for _, v := range strings.Split(code, "\n") {
 		eval(v)
