@@ -33,6 +33,8 @@ func (stk *Stack) Push(v interface{}) {
 		case tpl.INT:
 			v1, _ := interpreter.ParseInt(itfc[0].Literal)
 			stk.stk = append(stk.stk, v1)
+		case tpl.STRING:
+			stk.stk = append(stk.stk, itfc[0].Literal)
 		}
 	} else {
 		stk.stk = append(stk.stk, v)
@@ -78,7 +80,6 @@ func (stk *Stack) Assign(v interface{}) {
 	v1 := slc[0].Literal
 	if strings.Contains(v1, ".") {
 		val := stk.getVal(v1)
-		log.Printf("%+v,%+v,%+v,%+v,%v\n", v1, val, reflect.TypeOf(asignv).Kind(), val.Kind(), val.CanSet())
 		switch kind := val.Kind(); {
 		case kind == reflect.Bool:
 			val.SetBool(asignv.(bool))
@@ -109,6 +110,8 @@ func (stk *Stack) PushIdent(n string) {
 		stk.stk = append(stk.stk, val.Int())
 	case kind >= reflect.Uint && kind <= reflect.Uintptr:
 		stk.stk = append(stk.stk, val.Uint())
+	case kind == reflect.Struct:
+		stk.stk = append(stk.stk, val.Interface())
 	default:
 		panic("error value:" + n + ":" + val.Kind().String())
 	}

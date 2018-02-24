@@ -76,9 +76,9 @@ temp = temp + 100
 x.X5 = temp + 60
 y1 = x.Get()
 y1.Y1 = x.X5
+logi("x:%+v,y1:%+v\n",x,y1)
 `
 	for _, v := range strings.Split(code, "\n") {
 		eval(v)
 	}
-	fmt.Printf("%+v,%+v,%+v\n", x.X5, y, y.Y1)
 }

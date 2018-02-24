@@ -21,6 +21,7 @@ doc = term *('+' term/add | '-' term/sub)
 
 factor =
 	FLOAT/push |
+	STRING/push |
 	'-' factor/neg |
 	'(' doc ')' |
 	(IDENT '(' doc %= ','/ARITY ')')/call |

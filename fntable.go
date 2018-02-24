@@ -1,6 +1,7 @@
 package xgo
 
 import (
+	"log"
 	"math"
 )
 
@@ -109,4 +110,5 @@ var fntable = map[string]interface{}{
 	"$arrayslice": (*Stack).PushArrayOrSlice,
 	"$assign":     (*Stack).Assign,
 	"$call":       (*XGo).Call,
+	"$logi":       log.Printf,
 }
