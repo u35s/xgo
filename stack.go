@@ -79,6 +79,7 @@ func (stk *Stack) Assign(v interface{}) {
 	v1 := slc[0].Literal
 	if strings.Contains(v1, ".") {
 		val := stk.getVal(v1)
+		log.Printf("val:%+v,%+v,%+v,%+v,assign:%v\n", v1, val, val.Kind(), val.CanSet(), reflect.TypeOf(asignv).Kind())
 		switch kind := val.Kind(); {
 		case kind == reflect.Bool:
 			val.SetBool(asignv.(bool))
@@ -87,10 +88,13 @@ func (stk *Stack) Assign(v interface{}) {
 		case kind >= reflect.Float32 && kind <= reflect.Float64:
 			val.SetFloat(asignv.(float64))
 		case kind >= reflect.Uint && kind <= reflect.Uintptr:
-			if tp := reflect.TypeOf(asignv); tp.Kind() >= reflect.Float32 && tp.Kind() <= reflect.Float64 {
+			atp := reflect.TypeOf(asignv)
+			if atp.Kind() >= reflect.Float32 && atp.Kind() <= reflect.Float64 {
 				val.SetUint(uint64(asignv.(float64)))
-			} else if tp := reflect.TypeOf(asignv); tp.Kind() >= reflect.Uint && tp.Kind() <= reflect.Uint64 {
+			} else if atp.Kind() >= reflect.Uint && atp.Kind() <= reflect.Uint64 {
 				val.SetUint(asignv.(uint64))
+			} else if atp.Kind() >= reflect.Int && atp.Kind() <= reflect.Int64 {
+				val.SetUint(uint64(asignv.(int64)))
 			}
 		default:
 			panic("unkonw assign type")

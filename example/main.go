@@ -74,8 +74,11 @@ func main() {
 	}
 	code := `
 temp = 1 + 3 * 5 + x.x1.rb[0] + add(1,7) + x.X3(x.X5)
+printf("temp:%v",temp)
 temp = temp + 100
+printf("temp:%v",temp)
 x.X5 = temp + 60
+printf("x.X5:%v",x.X5)
 y1 = x.Get()
 y1.Y1 = x.X5
 printf("x:%+v,y1:%+v\n",x,y1)
