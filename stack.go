@@ -139,6 +139,9 @@ func (stk *Stack) PushRet(ret []reflect.Value) error {
 		case kind == reflect.Ptr:
 			stk.Push(v.Interface())
 			continue
+		case kind == reflect.Interface:
+			stk.Push(v.Interface())
+			continue
 		default:
 			log.Println(v.Kind())
 			return ErrUnsupportedRetType

@@ -15,11 +15,13 @@ var (
 
 const gm = `
 
-term = factor *('*' factor/mul | '/' factor/quo | '%' factor/mod)
+term = factor *('*' factor/mul | '/' factor/quo | '%' factor/mod |
+	"<<" factor/lshr | ">>" factor/rshr | '&' factor/bitand | "&^" factor/andnot)
 
 doc = term *('+' term/add | '-' term/sub)
 
 factor =
+	INT/push|
 	FLOAT/push |
 	STRING/push |
 	'-' factor/neg |
