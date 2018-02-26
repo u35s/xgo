@@ -15,17 +15,17 @@ import (
 
 type X struct {
 	x1 struct {
-		ra float64
-		rb []float64
+		ra int
+		rb []int
 	}
-	x2 float64
-	X3 func(uint) float64
-	x4 func() float64
-	X5 uint
+	x2 int
+	X3 func(int) int
+	x4 func() int
+	X5 int
 }
 
 type Y struct {
-	Y1 uint
+	Y1 int
 }
 
 func (this *X) Get() *Y { return &y }
@@ -62,9 +62,9 @@ func eval(line string) {
 
 func main() {
 	x.x1.ra = 6
-	x.x1.rb = []float64{1}
-	x.X3 = func(d uint) float64 { return 5 * float64(d) }
-	x.x4 = func() float64 { return 5 }
+	x.x1.rb = []int{1}
+	x.X3 = func(d int) int { return 5 * d }
+	x.x4 = func() int { return 5 }
 	x.X5 = 3
 	ipt.AddVar("x", &x)
 	var err error
@@ -75,7 +75,7 @@ func main() {
 	code := `
 temp = 1 + 3 * 5 + x.x1.rb[0] + add(1,7) + x.X3(x.X5)
 printf("temp:%v",temp)
-temp = temp + 100
+temp = temp + int(100)
 printf("temp:%v",temp)
 x.X5 = temp + 60
 printf("x.X5:%v",x.X5)
@@ -88,6 +88,9 @@ printf("a:%+v",a)
 b = 1
 a = a>>b
 printf("a:%+v,b:%+v",a,b)
+
+u1 = uint(1)+2
+printf("u1:%+v",u1)
 `
 	for _, v := range strings.Split(code, "\n") {
 		eval(v)

@@ -41,9 +41,9 @@ func recursiveGetReflectValue(itfc interface{}, nameSlc []string) (index int, va
 	return
 }
 
-func Atoi(s string) int64 {
+func Atoi(s string) int {
 	if i, err := strconv.ParseInt(s, 10, 0); err == nil {
-		return int64(i)
+		return int(i)
 	}
 	return 0
 }

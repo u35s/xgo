@@ -3,9 +3,9 @@ package builtin
 // Lshr returns a << b
 func Lshr(a, b interface{}) interface{} {
 	switch a1 := a.(type) {
-	case int64:
+	case int:
 		switch b1 := b.(type) {
-		case int64:
+		case int:
 			return a1 << uint(b1)
 		}
 	}
@@ -15,9 +15,9 @@ func Lshr(a, b interface{}) interface{} {
 // Rshr returns a >> b
 func Rshr(a, b interface{}) interface{} {
 	switch a1 := a.(type) {
-	case int64:
+	case int:
 		switch b1 := b.(type) {
-		case int64:
+		case int:
 			return a1 >> uint(b1)
 		}
 	}

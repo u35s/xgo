@@ -19,8 +19,8 @@ func Add(a, b interface{}) interface{} {
 		switch b1 := b.(type) {
 		case int:
 			return a1 + b1
-		case float64:
-			return float64(a1) + b1
+		case int64:
+			return a1 + int(b1)
 		}
 	case float64:
 		switch b1 := b.(type) {
@@ -45,9 +45,9 @@ func Add(a, b interface{}) interface{} {
 		}
 	case int64:
 		switch b1 := b.(type) {
-		case int64:
+		case int:
 			return a1 + int64(b1)
-		case float64:
+		case int64:
 			return a1 + int64(b1)
 		}
 	case uint32:
@@ -153,18 +153,9 @@ func Sub(a, b interface{}) interface{} {
 // Mul returns a*b
 func Mul(a, b interface{}) interface{} {
 	switch a1 := a.(type) {
-	case int64:
+	case int:
 		switch b1 := b.(type) {
-		case int64:
-			return a1 * b1
-		case float64:
-			return float64(a1) * b1
-		}
-	case float64:
-		switch b1 := b.(type) {
-		case int64:
-			return a1 * float64(b1)
-		case float64:
+		case int:
 			return a1 * b1
 		}
 	}

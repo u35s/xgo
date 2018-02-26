@@ -5,13 +5,14 @@ import (
 )
 
 var fntable = map[string]interface{}{
-	"$ARITY":      Arity,
+	"$ARITY":      (*Stack).Arity,
 	"$push":       (*Stack).Push,
 	"$ident":      (*Stack).PushIdent,
 	"$arrayslice": (*Stack).PushArrayOrSlice,
 	"$assign":     (*Stack).Assign,
-	"$call":       (*XGo).Call,
-	"$printf":     log.Printf,
+
+	"$call":   (*XGo).Call,
+	"$printf": log.Printf,
 }
 
 func Import(table map[string]interface{}) {
